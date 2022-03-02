@@ -7,5 +7,4 @@ resource "google_notebooks_instance" "instance" {
 resource "google_storage_bucket" "reda-bucket" {
   name                        = "reda-bucket-tf"
   location                    = "EU"
-  uniform_bucket_level_access = true
 }
