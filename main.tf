@@ -1,5 +1,5 @@
-resource "google_notebooks_instance" "get_insta_data_tf" {
-  name         = "get_insta_data_tf"
+resource "google_notebooks_instance" "get-insta-data-tf" {
+  name         = "get-insta-data-tf"
   location     = "us-west1-b"
   machine_type = "n1-standard-1"
   vm_image {
