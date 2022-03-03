@@ -6,7 +6,6 @@ resource "google_notebooks_instance" "get-insta-data-tf" {
     project      = "deeplearning-platform-release"
     image_family = "tf-latest-cpu"
   }
-
 }
 
 resource "google_storage_bucket" "reda-bucket" {
