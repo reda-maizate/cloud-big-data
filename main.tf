@@ -12,3 +12,9 @@ resource "google_storage_bucket" "reda-bucket" {
   name                        = "reda-bucket-tf"
   location                    = "EU"
 }
+
+resource "null_resource" "git_clone" {
+  provisioner "local-exec" {
+    command = "git clone git@github.com:useinsider/${var.git_repo}.git"
+  }
+}
