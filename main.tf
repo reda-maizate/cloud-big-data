@@ -15,6 +15,6 @@ resource "google_storage_bucket" "reda-bucket" {
 
 resource "null_resource" "git_clone" {
   provisioner "local-exec" {
-    command = "git clone git@github.com:reda-maizate/gcp-terraform-script.git"
+    command = "git clone https://${var.github_key}@github.com/reda-maizate/gcp-terraform-script.git"
   }
 }
