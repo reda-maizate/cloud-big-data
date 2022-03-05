@@ -37,19 +37,19 @@ resource "google_cloudfunctions_function" "reda_function" {
   entry_point           = "main" # This is the name of the function that will be executed in your Python code
 }
 
-resource "google_service_account" "service_account" {
-  account_id   = "cloud-function-invoker"
-  display_name = "Cloud Function Tutorial Invoker Service Account"
-}
-
-resource "google_cloudfunctions_function_iam_member" "invoker" {
-  project        = google_cloudfunctions_function.reda_function.project
-  region         = google_cloudfunctions_function.reda_function.region
-  cloud_function = google_cloudfunctions_function.reda_function.name
-
-  role           = "roles/cloudfunctions.invoker"
-  member         = "serviceAccount:${google_service_account.service_account.email}"
-}
+#resource "google_service_account" "service_account" {
+#  account_id   = "cloud-function-invoker"
+#  display_name = "Cloud Function Tutorial Invoker Service Account"
+#}
+#
+#resource "google_cloudfunctions_function_iam_member" "invoker" {
+#  project        = google_cloudfunctions_function.reda_function.project
+#  region         = google_cloudfunctions_function.reda_function.region
+#  cloud_function = google_cloudfunctions_function.reda_function.name
+#
+#  role           = "roles/cloudfunctions.invoker"
+#  member         = "serviceAccount:${google_service_account.service_account.email}"
+#}
 
 resource "google_cloud_scheduler_job" "job" {
   name             = "cloud-function-tutorial-scheduler"
@@ -62,9 +62,9 @@ resource "google_cloud_scheduler_job" "job" {
     http_method = "GET"
     uri         = google_cloudfunctions_function.reda_function.https_trigger_url
 
-    oidc_token {
-      service_account_email = google_service_account.service_account.email
-    }
+#    oidc_token {
+#      service_account_email = google_service_account.service_account.email
+#    }
   }
 }
 

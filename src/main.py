@@ -3,12 +3,11 @@ import pandas as pd
 from instagramy import InstagramUser, InstagramPost
 from collections import defaultdict
 from datetime import date, datetime
+from google.cloud import storage
 
 
 def main():
-    BUCKET = 'reda-project'
-    os.environ['BUCKET'] = 'reda-project'
-
+    print("starting function")
     # Changement manuel du sessionid pour l'instant
     session_id = "51744929721%3ARmvyDanBisbGGN%3A2"
     instagram_target_username = 'selenagomez'
@@ -26,8 +25,8 @@ def main():
     infos_dict["is_verified"].append(user.is_verified)
 
     infos_df = pd.DataFrame(infos_dict)
-    infos_df.to_csv(f"{instagram_target_username}-infos.csv", index=False)
-
+    infos_csv = infos_df.to_csv()
+    print("middle function")
     # Créer un dataframe contenant tout ses posts dans un dataframe
     posts_dict = defaultdict(list)
     posts = user.posts
@@ -45,12 +44,17 @@ def main():
         posts_dict["shortcode"].append(post.shortcode)
 
     posts_df = pd.DataFrame(posts_dict)
-    posts_df.to_csv(f"{instagram_target_username}-posts.csv", index=False)
+    posts_csv = posts_df.to_csv()
 
-    # bashCommand = "gsutil cp *.csv gs://$BUCKET/"
-    # process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-    # output, error = process.communicate()
+    def upload_blob(bucket_name, data, destination_blob_name):
+        storage_client = storage.Client()
+        bucket = storage_client.get_bucket(bucket_name)
+        blob = bucket.blob(destination_blob_name)
+        blob.upload_from_string(data, content_type='text/csv')
+
+    upload_blob('reda-bucket-tf', infos_csv, f'{instagram_target_username}-infos.csv')
+    upload_blob('reda-bucket-tf', posts_csv, f'{instagram_target_username}-posts.csv')
+    print("infos and posts sent to buckets")
 
 
-if __name__ == "__main__":
-    main()
+main()

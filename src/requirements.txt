@@ -1,4 +1,3 @@
 pandas
 instagramy
-subprocess
-collections
+google-cloud-storage
