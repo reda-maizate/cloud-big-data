@@ -50,9 +50,10 @@ resource "google_cloud_scheduler_job" "job" {
     http_method = "GET"
     uri         = google_cloudfunctions_function.reda_function.https_trigger_url
 
-#    oidc_token {
-#      service_account_email = google_service_account.service_account.email
-#    }
+    oidc_token {
+      service_account_email = "reda-cloud-scheduler@cloud-big-data-335413.iam.gserviceaccount.com"
+      audience              = google_cloudfunctions_function.reda_function.https_trigger_url
+    }
   }
 }
 
@@ -65,6 +66,7 @@ resource "google_cloudfunctions_function" "reda_function" {
   source_archive_object = google_storage_bucket_object.archive.name
   trigger_http          = true
   entry_point           = "main" # This is the name of the function that will be executed in your Python code
+  ingress_settings      = "ALLOW_ALL"
 }
 
 #resource "null_resource" "copy_to_gcs" {

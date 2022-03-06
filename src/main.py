@@ -53,8 +53,8 @@ def main():
     posts_df = pd.DataFrame(posts_dict)
     posts_csv = posts_df.to_csv()
 
-    # upload_blob('reda-bucket-tf', infos_csv, f'{instagram_target_username}-infos.csv')
-    # upload_blob('reda-bucket-tf', posts_csv, f'{instagram_target_username}-posts.csv')
+    upload_blob('reda-bucket-tf', infos_csv, f'{instagram_target_username}-infos.csv')
+    upload_blob('reda-bucket-tf', posts_csv, f'{instagram_target_username}-posts.csv')
     print("infos and posts sent to buckets")
 
 
@@ -64,7 +64,7 @@ def upload_blob(bucket_name, blob_text, destination_blob_name):
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
 
-    blob.upload_from_string(blob_text)
+    blob.upload_from_string(blob_text, content_type='text/csv')
 
     print('File uploaded to {}.'.format(destination_blob_name))
 
