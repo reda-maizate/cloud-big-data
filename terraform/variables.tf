@@ -1,16 +1,12 @@
-#variable "project_id" {
-#  type = string
-#}
-#
-#variable "github_key" {
-#  type = string
-#}
-#
-#variable "region" {
-#  type = string
-#}
-#
-#variable "zone" {
-#  type = string
-#}
+variable "project_id" {
+    default = "cloud-big-data-335413"
+}
+
+variable "region" {
+    default = "europe-west1"
+}
+
+variable "zone" {
+    default = "us-west1-b"
+}
 

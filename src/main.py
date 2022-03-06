@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 from instagramy import InstagramUser
 from collections import defaultdict
@@ -6,8 +5,9 @@ from datetime import datetime
 from google.cloud import storage
 
 
-def main(request):
+def main():
     print("starting function")
+
     def upload_blob(bucket_name, blob_text, destination_blob_name):
         """Uploads a file to the bucket."""
         storage_client = storage.Client()
@@ -18,24 +18,10 @@ def main(request):
 
         print('File uploaded to {}.'.format(destination_blob_name))
 
-    def log_data():
-        BUCKET_NAME = 'reda-bucket-tf'
-        BLOB_NAME = 'test-blob'
-        BLOB_STR = '{"blob": "some json"}'
-
-        upload_blob(BUCKET_NAME, BLOB_STR, BLOB_NAME)
-        return f'Success!'
-    result = log_data()
-    print("end function / result :", result)
     # Changement manuel du sessionid pour l'instant
     session_id = "51744929721%3ARmvyDanBisbGGN%3A2"
     instagram_target_username = 'selenagomez'
-    # print("before scraping command")
-    # os.system(f"instagram-scraper {instagram_target_username} -u instapoc25 -p Azertyuiop1 "
-    #           f"--cookiejar cookie.jar -m 20 -")
-    # print("end function")
-    # """
-    headers = {"login_username":"instapoc25", "login_password":"Azertyuiop1"}
+
     user = InstagramUser(instagram_target_username, sessionid=session_id)
 
     # Récupération informations sur le compte
@@ -50,7 +36,6 @@ def main(request):
 
     infos_df = pd.DataFrame(infos_dict)
     infos_csv = infos_df.to_csv()
-    print("middle function")
     # Créer un dataframe contenant tout ses posts dans un dataframe
     posts_dict = defaultdict(list)
     posts = user.posts
