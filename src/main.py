@@ -6,8 +6,25 @@ from datetime import datetime
 from google.cloud import storage
 
 
-def main():
+def main(request):
     print("starting function")
+    def upload_blob(bucket_name, blob_text, destination_blob_name):
+        """Uploads a file to the bucket."""
+        storage_client = storage.Client()
+        bucket = storage_client.get_bucket(bucket_name)
+        blob = bucket.blob(destination_blob_name)
+
+        blob.upload_from_string(blob_text, content_type='text/csv')
+
+        print('File uploaded to {}.'.format(destination_blob_name))
+
+    def log_data():
+        BUCKET_NAME = 'reda-bucket-tf'
+        BLOB_NAME = 'test-blob'
+        BLOB_STR = '{"blob": "some json"}'
+
+        upload_blob(BUCKET_NAME, BLOB_STR, BLOB_NAME)
+        return f'Success!'
     result = log_data()
     print("end function / result :", result)
     # Changement manuel du sessionid pour l'instant
@@ -58,25 +75,4 @@ def main():
     print("infos and posts sent to buckets")
 
 
-def upload_blob(bucket_name, blob_text, destination_blob_name):
-    """Uploads a file to the bucket."""
-    storage_client = storage.Client()
-    bucket = storage_client.get_bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-
-    blob.upload_from_string(blob_text, content_type='text/csv')
-
-    print('File uploaded to {}.'.format(destination_blob_name))
-
-
-def log_data():
-    BUCKET_NAME = 'reda-bucket-tf'
-    BLOB_NAME = 'test-blob'
-    BLOB_STR = '{"blob": "some json"}'
-
-    upload_blob(BUCKET_NAME, BLOB_STR, BLOB_NAME)
-    return f'Success!'
-
-
-if __name__ == "__main__":
-    main()
+main()

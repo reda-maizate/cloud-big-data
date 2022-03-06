@@ -1,13 +1,3 @@
-#resource "google_notebooks_instance" "get-insta-data-tf" {
-#  name         = "get-insta-data-tf"
-#  location     = "us-west1-b"
-#  machine_type = "n1-standard-1"
-#  vm_image {
-#    project      = "deeplearning-platform-release"
-#    image_family = "tf-latest-cpu"
-#  }
-#}
-
 resource "google_storage_bucket" "reda-bucket" {
   name                        = "reda-bucket-tf"
   location                    = "EU"
@@ -25,25 +15,10 @@ resource "google_storage_bucket_object" "archive" {
   source = "${path.root}/../generated/src.zip"
 }
 
-#resource "google_service_account" "service_account" {
-#  account_id   = "cloud-function-invoker"
-#  display_name = "Cloud Function Tutorial Invoker Service Account"
-#}
-
-#resource "google_cloudfunctions_function_iam_member" "invoker" {
-#  project        = google_cloudfunctions_function.reda_function.project
-#  region         = google_cloudfunctions_function.reda_function.region
-#  cloud_function = google_cloudfunctions_function.reda_function.name
-#
-#  role           = "roles/cloudfunctions.invoker"
-#  member         = "serviceAccount:${google_service_account.service_account.email}"
-#}
-
 resource "google_cloud_scheduler_job" "job" {
   name             = "instagram-daily-scheduler"
   description      = "Trigger the ${google_cloudfunctions_function.reda_function.name} Cloud Function every 10 mins."
   schedule         = "*/10 * * * *" # Every 10 mins
-  time_zone        = "Europe/Dublin"
   attempt_deadline = "320s"
 
   http_target {
@@ -68,9 +43,3 @@ resource "google_cloudfunctions_function" "reda_function" {
   entry_point           = "main" # This is the name of the function that will be executed in your Python code
   ingress_settings      = "ALLOW_ALL"
 }
-
-#resource "null_resource" "copy_to_gcs" {
-#  provisioner "local-exec" {
-#    command = "gsutil cp *.csv gs://${google_storage_bucket.reda-bucket.name}/"
-#  }
-#}
