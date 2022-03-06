@@ -25,23 +25,11 @@ resource "google_storage_bucket_object" "archive" {
   source = "${path.root}/../generated/src.zip"
 }
 
-resource "google_cloudfunctions_function" "reda_function" {
-  name                  = "scheduled-cloud-function-tutorial"
-  description           = "An example Cloud Function that is triggered by a Cloud Schedule."
-  runtime               = "python38"
-
-  available_memory_mb   = 128
-  source_archive_bucket = google_storage_bucket.reda-bucket.name
-  source_archive_object = google_storage_bucket_object.archive.name
-  trigger_http          = true
-  entry_point           = "main" # This is the name of the function that will be executed in your Python code
-}
-
 #resource "google_service_account" "service_account" {
 #  account_id   = "cloud-function-invoker"
 #  display_name = "Cloud Function Tutorial Invoker Service Account"
 #}
-#
+
 #resource "google_cloudfunctions_function_iam_member" "invoker" {
 #  project        = google_cloudfunctions_function.reda_function.project
 #  region         = google_cloudfunctions_function.reda_function.region
@@ -52,7 +40,7 @@ resource "google_cloudfunctions_function" "reda_function" {
 #}
 
 resource "google_cloud_scheduler_job" "job" {
-  name             = "cloud-function-tutorial-scheduler"
+  name             = "instagram-daily-scheduler"
   description      = "Trigger the ${google_cloudfunctions_function.reda_function.name} Cloud Function every 10 mins."
   schedule         = "*/10 * * * *" # Every 10 mins
   time_zone        = "Europe/Dublin"
@@ -66,6 +54,17 @@ resource "google_cloud_scheduler_job" "job" {
 #      service_account_email = google_service_account.service_account.email
 #    }
   }
+}
+
+resource "google_cloudfunctions_function" "reda_function" {
+  name                  = "get-insta-data-function"
+  runtime               = "python38"
+
+  available_memory_mb   = 128
+  source_archive_bucket = google_storage_bucket.reda-bucket.name
+  source_archive_object = google_storage_bucket_object.archive.name
+  trigger_http          = true
+  entry_point           = "main" # This is the name of the function that will be executed in your Python code
 }
 
 #resource "null_resource" "copy_to_gcs" {

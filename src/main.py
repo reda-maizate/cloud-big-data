@@ -1,17 +1,24 @@
 import os
 import pandas as pd
-from instagramy import InstagramUser, InstagramPost
+from instagramy import InstagramUser
 from collections import defaultdict
-from datetime import date, datetime
+from datetime import datetime
 from google.cloud import storage
 
 
 def main():
     print("starting function")
+    result = log_data()
+    print("end function / result :", result)
     # Changement manuel du sessionid pour l'instant
     session_id = "51744929721%3ARmvyDanBisbGGN%3A2"
     instagram_target_username = 'selenagomez'
-
+    # print("before scraping command")
+    # os.system(f"instagram-scraper {instagram_target_username} -u instapoc25 -p Azertyuiop1 "
+    #           f"--cookiejar cookie.jar -m 20 -")
+    # print("end function")
+    # """
+    headers = {"login_username":"instapoc25", "login_password":"Azertyuiop1"}
     user = InstagramUser(instagram_target_username, sessionid=session_id)
 
     # Récupération informations sur le compte
@@ -46,15 +53,30 @@ def main():
     posts_df = pd.DataFrame(posts_dict)
     posts_csv = posts_df.to_csv()
 
-    def upload_blob(bucket_name, data, destination_blob_name):
-        storage_client = storage.Client()
-        bucket = storage_client.get_bucket(bucket_name)
-        blob = bucket.blob(destination_blob_name)
-        blob.upload_from_string(data, content_type='text/csv')
-
-    upload_blob('reda-bucket-tf', infos_csv, f'{instagram_target_username}-infos.csv')
-    upload_blob('reda-bucket-tf', posts_csv, f'{instagram_target_username}-posts.csv')
+    # upload_blob('reda-bucket-tf', infos_csv, f'{instagram_target_username}-infos.csv')
+    # upload_blob('reda-bucket-tf', posts_csv, f'{instagram_target_username}-posts.csv')
     print("infos and posts sent to buckets")
 
 
-main()
+def upload_blob(bucket_name, blob_text, destination_blob_name):
+    """Uploads a file to the bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    blob.upload_from_string(blob_text)
+
+    print('File uploaded to {}.'.format(destination_blob_name))
+
+
+def log_data():
+    BUCKET_NAME = 'reda-bucket-tf'
+    BLOB_NAME = 'test-blob'
+    BLOB_STR = '{"blob": "some json"}'
+
+    upload_blob(BUCKET_NAME, BLOB_STR, BLOB_NAME)
+    return f'Success!'
+
+
+if __name__ == "__main__":
+    main()
