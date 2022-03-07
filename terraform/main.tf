@@ -18,7 +18,7 @@ resource "google_storage_bucket_object" "archive" {
 resource "google_cloud_scheduler_job" "job" {
   name             = "instagram-daily-scheduler"
   description      = "Trigger the ${google_cloudfunctions_function.reda_function.name} Cloud Function every 10 mins."
-  schedule         = "*/10 * * * *" # Every 10 mins
+  schedule         = "0 0 * * *" # Every day
   attempt_deadline = "320s"
 
   http_target {
